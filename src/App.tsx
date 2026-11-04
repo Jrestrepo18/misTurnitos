@@ -269,7 +269,7 @@ function App() {
             <p className="eyebrow">TU CALENDARIO PERSONAL</p>
             <p className="muted">Aquí tienes tus turnos organizaditos.</p>
           </div>
-          <div className="welcome-flower" aria-hidden="true"><span>🌻</span></div>
+          <div className="welcome-flower" aria-hidden="true"><span>✿</span></div>
         </section>
 
         {schedule && schedule.names.length > 0 ? (
