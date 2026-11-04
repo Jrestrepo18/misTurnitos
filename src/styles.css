@@ -39,7 +39,7 @@ h1 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: clamp(29
 h1 span { color: #d58ca6; }
 .mobile-break { display: none; }
 .muted { margin: 0; color: #968c95; font-size: 12px; }
-.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #cb8ba2; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
+.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #e5bd55; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
 .auxiliary-pill { width: 100%; border: 1px solid #eee5ed; border-radius: 18px; background: #fffdfc; display: flex; align-items: center; padding: 11px 13px; text-align: left; gap: 10px; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(112, 89, 109, .035); }
 .avatar { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 13px; color: #856f99; background: #f0e8f5; }
 .auxiliary-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -111,7 +111,7 @@ h1 span { color: #d58ca6; }
 .notice-warning { background: #fbf1e9; color: #a17a5f; }
 .footer-note { display: flex; align-items: center; justify-content: center; gap: 6px; color: #b8aab5; font-size: 9px; padding: 25px 0 5px; }
 .footer-note svg { color: #d79ab0; }
-.footer-note .footer-heart { color: #f2c34b; }
+.footer-note .footer-heart { color: #e5bd55; }
 .import-card { padding: 23px 18px 19px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .import-illustration { width: 57px; height: 57px; display: grid; place-items: center; background: #f1eaf5; border-radius: 20px; color: #9279a6; margin-bottom: 2px; }
 .import-copy h2, .choose-card h2 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; color: #5b505e; font-size: 19px; margin: 0 0 6px; }
@@ -152,19 +152,6 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
   .calendar-card { padding: 22px 20px 16px; }
   .day-cell { aspect-ratio: 1 / .8; }
   .modal-backdrop { align-items: center; }
-}
-
-/* Optimización de espacio en celulares: se conserva intacto el diseño de la flor. */
-@media (max-width: 699px) {
-  .topbar { padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: 10px; }
-  .main-content { padding-top: 10px; }
-  .welcome-row { margin: 2px 2px 9px; }
-  .auxiliary-pill { padding: 8px 12px; margin-bottom: 10px; }
-  .calendar-card { padding-top: 15px; padding-bottom: 12px; }
-  .calendar-heading { margin-bottom: 12px; }
-  .weekdays { margin-bottom: 6px; }
-  .day-cell, .calendar-empty { aspect-ratio: 1 / .94; }
-  .day-detail { margin-top: 10px; }
 }
 
 @media (max-width: 380px) {
