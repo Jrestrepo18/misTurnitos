@@ -39,7 +39,7 @@ h1 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: clamp(29
 h1 span { color: #d58ca6; }
 .mobile-break { display: none; }
 .muted { margin: 0; color: #968c95; font-size: 12px; }
-.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #e5bd55; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
+.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #cb8ba2; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
 .auxiliary-pill { width: 100%; border: 1px solid #eee5ed; border-radius: 18px; background: #fffdfc; display: flex; align-items: center; padding: 11px 13px; text-align: left; gap: 10px; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(112, 89, 109, .035); }
 .avatar { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 13px; color: #856f99; background: #f0e8f5; }
 .auxiliary-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -111,7 +111,6 @@ h1 span { color: #d58ca6; }
 .notice-warning { background: #fbf1e9; color: #a17a5f; }
 .footer-note { display: flex; align-items: center; justify-content: center; gap: 6px; color: #b8aab5; font-size: 9px; padding: 25px 0 5px; }
 .footer-note svg { color: #d79ab0; }
-.footer-note .footer-heart { color: #e5bd55; }
 .import-card { padding: 23px 18px 19px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .import-illustration { width: 57px; height: 57px; display: grid; place-items: center; background: #f1eaf5; border-radius: 20px; color: #9279a6; margin-bottom: 2px; }
 .import-copy h2, .choose-card h2 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; color: #5b505e; font-size: 19px; margin: 0 0 6px; }
@@ -130,43 +129,93 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.modal-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(66,54,68,.28); display: flex; align-items: flex-end; justify-content: center; padding: 12px; }
-.settings-sheet { width: min(100%, 480px); max-height: min(88vh, 760px); overflow-y: auto; background: #fffdfc; border-radius: 25px; padding: 9px 19px max(18px, env(safe-area-inset-bottom)); box-shadow: 0 12px 45px rgba(49,37,51,.18); }
-.sheet-handle { height: 4px; width: 38px; border-radius: 5px; background: #e9e0e7; margin: 1px auto 16px; }
-.settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-.settings-header h2 { margin: 0; color: #584d5c; font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: 22px; }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  background: rgba(55, 43, 60, .34);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  animation: settingsFadeIn .18s ease-out;
+}
+.settings-sheet {
+  width: min(100%, 490px);
+  max-height: min(91dvh, 820px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fffdfc;
+  border: 1px solid rgba(240, 231, 239, .95);
+  border-radius: 27px;
+  padding: 9px 18px 0;
+  box-shadow: 0 18px 60px rgba(49, 37, 51, .23);
+  animation: settingsSheetIn .22s ease-out;
+}
+.sheet-handle { height: 4px; width: 42px; flex: 0 0 4px; border-radius: 5px; background: #e9e0e7; margin: 1px auto 13px; }
+.settings-header { flex: 0 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin: 0 0 15px; padding: 0 1px 13px; border-bottom: 1px solid #f1eaf0; }
+.settings-title-wrap { min-width: 0; }
+.settings-kicker { display: block; color: #a394a2; font-size: 8px; font-weight: 800; letter-spacing: .16em; margin-bottom: 4px; }
+.settings-header h2 { margin: 0; color: #584d5c; font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: 23px; line-height: 1.12; letter-spacing: -.025em; }
 .settings-header h2 span { color: #d58ca6; }
-.setting-group { margin: 13px 0; display: grid; gap: 6px; }
-.setting-group label { color: #6c606e; font-size: 10px; font-weight: 700; }
-.setting-group small { color: #a399a2; font-size: 9px; line-height: 1.5; }
-.secondary-button { width: 100%; margin: 4px 0 0; color: #8c759b; background: #f4eff6; }
-.help-panel { margin-top: 9px; background: #f8f4f8; padding: 11px; border-radius: 12px; color: #837888; line-height: 1.55; font-size: 10px; }
-.settings-actions { display: grid; grid-template-columns: .9fr 1.3fr; gap: 8px; margin-top: 17px; }
-.outline-button { border: 1px solid #e9e0eb; background: white; color: #856f95; }
-.install-button { width: 100%; background: #f8eaf0; color: #a56f87; margin-top: 9px; }
-.privacy-note { margin: 14px 0 0; display: flex; justify-content: center; align-items: center; gap: 6px; color: #aaa0a9; font-size: 9px; }
+.settings-header p { margin: 5px 0 0; color: #9b909b; font-size: 10px; line-height: 1.4; }
+.settings-close { width: 36px; height: 36px; flex: 0 0 36px; border: 1px solid #eee5eb; border-radius: 13px; display: grid; place-items: center; color: #88778f; background: #fff; }
+.settings-close:active, .settings-upload-button:active, .settings-save-button:active, .settings-cancel-button:active { transform: scale(.98); }
+.settings-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 11px; padding: 1px 1px 13px; scrollbar-width: thin; scrollbar-color: #e4d8e8 transparent; }
+.settings-card { min-width: 0; padding: 13px; border: 1px solid #f0e8ef; border-radius: 18px; background: linear-gradient(145deg, #fff 0%, #fdfafd 100%); box-shadow: 0 4px 13px rgba(103, 80, 93, .025); }
+.settings-card-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.settings-icon { width: 37px; height: 37px; flex: 0 0 37px; border-radius: 13px; display: grid; place-items: center; }
+.profile-icon { color: #856d9b; background: #f0e8f5; }
+.source-icon { color: #a46f88; background: #f8eaf0; }
+.settings-card-heading h3, .settings-upload-copy h3 { margin: 0; color: #5b505f; font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: 12px; font-weight: 800; }
+.settings-card-heading p, .settings-upload-copy p { margin: 3px 0 0; color: #9b909b; font-size: 9px; line-height: 1.45; }
+.settings-field-label { display: block; margin: 0 0 6px; color: #766979; font-size: 9px; font-weight: 800; letter-spacing: .025em; }
+.settings-field-label span { color: #a99eaa; font-weight: 500; }
+.settings-select-wrap { position: relative; }
+.settings-select-wrap select { min-height: 44px; padding: 0 38px 0 12px; border-color: #eae1eb; border-radius: 12px; background: #fff; color: #5f5364; font-size: 11px; font-weight: 700; appearance: none; -webkit-appearance: none; }
+.settings-select-wrap > svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9b86a5; pointer-events: none; }
+.settings-inline-hint { display: flex; align-items: center; gap: 5px; margin-top: 8px; color: #829487; font-size: 9px; }
+.settings-inline-hint svg { color: #78a184; }
+.settings-input { min-height: 44px !important; border-color: #eae1eb !important; border-radius: 12px !important; background: #fff !important; color: #5f5364 !important; font-size: 10px !important; }
+.settings-input:focus, .settings-select-wrap select:focus { border-color: #bba6ca !important; box-shadow: 0 0 0 3px rgba(187, 166, 202, .13) !important; }
+.settings-field-help { margin: 6px 0 0; color: #a096a0; font-size: 9px; line-height: 1.5; }
+.advanced-toggle { width: 100%; min-height: 37px; display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 8px 1px 0; border: 0; border-top: 1px solid #f1eaf0; background: transparent; color: #887493; font-size: 9px; font-weight: 800; }
+.advanced-toggle > span { display: inline-flex; align-items: center; gap: 7px; }
+.advanced-chevron { color: #a28da9; transition: transform .18s ease; }
+.advanced-chevron.is-open { transform: rotate(180deg); }
+.advanced-content { padding-top: 9px; animation: settingsFadeIn .16s ease-out; }
+.settings-upload-card { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px dashed #dfd1e4; border-radius: 17px; background: #faf6fb; }
+.settings-upload-icon { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 12px; color: #8e75a1; background: #eee5f4; }
+.settings-upload-copy { flex: 1; min-width: 0; }
+.settings-upload-button { flex: 0 0 auto; min-height: 35px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 10px; border: 1px solid #e5d9e9; border-radius: 10px; color: #80688f; background: #fff; font-size: 9px; font-weight: 800; }
+.settings-help-card { overflow: hidden; border: 1px solid #eee6ef; border-radius: 15px; background: #fff; }
+.settings-help-toggle { width: 100%; min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 0; background: transparent; }
+.settings-help-title { display: inline-flex; align-items: center; gap: 8px; color: #85718f; font-size: 9px; font-weight: 800; }
+.settings-help-content { padding: 0 12px 12px 37px; color: #8e8490; font-size: 9px; line-height: 1.55; animation: settingsFadeIn .16s ease-out; }
+.settings-help-content b { color: #6e5b78; }
+.settings-footer { flex: 0 0 auto; padding: 10px 1px max(14px, env(safe-area-inset-bottom)); border-top: 1px solid #f0e9ef; background: #fffdfc; }
+.settings-actions { display: grid; grid-template-columns: .78fr 1.35fr; gap: 9px; margin: 0; }
+.settings-cancel-button, .settings-save-button, .settings-install-button { min-height: 44px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 12px; font-size: 10px; font-weight: 800; }
+.settings-cancel-button { border: 1px solid #e9e0eb; color: #86768e; background: #fff; }
+.settings-save-button { border: 0; color: #fff; background: #9279a6; box-shadow: 0 5px 12px rgba(146, 121, 166, .18); }
+.settings-save-button:hover { background: #816993; }
+.settings-save-button:disabled { opacity: .5; cursor: not-allowed; }
+.settings-install-button { width: 100%; min-height: 39px; margin: 0 0 8px; border: 0; color: #a56f87; background: #f8eaf0; }
+.privacy-note { margin: 9px 0 0; display: flex; justify-content: center; align-items: center; gap: 6px; color: #a69ba7; font-size: 8px; line-height: 1.4; text-align: center; }
+.privacy-note svg { flex: 0 0 auto; color: #8d9d8e; }
+@keyframes settingsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes settingsSheetIn { from { opacity: .75; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (min-width: 700px) {
   .main-content { padding-top: 24px; }
   .welcome-row { margin-bottom: 24px; }
   .calendar-card { padding: 22px 20px 16px; }
   .day-cell { aspect-ratio: 1 / .8; }
-  .modal-backdrop { align-items: center; }
-}
-
-/* En móviles: acercamos la bienvenida al encabezado y subimos el calendario.
-   La flor mantiene exactamente su tamaño, forma y recuadro actuales. */
-@media (max-width: 699px) {
-  .topbar { padding-bottom: 6px; }
-  .main-content { padding-top: 3px; padding-bottom: 18px; }
-  .welcome-row { margin: 0 2px 10px; }
-  .welcome-flower { width: 66px; height: 66px; font-size: 42px; }
-  .auxiliary-pill { padding: 8px 12px; margin-bottom: 10px; }
-  .calendar-card { padding-top: 15px; padding-bottom: 12px; }
-  .calendar-heading { margin-bottom: 12px; }
-  .weekdays { margin-bottom: 6px; }
-  .day-cell, .calendar-empty { aspect-ratio: 1 / 1; }
-  .day-detail { margin-top: 10px; }
+  .modal-backdrop { align-items: center; padding: 20px; }
+  .settings-sheet { max-height: min(88dvh, 820px); border-radius: 27px; }
 }
 
 @media (max-width: 380px) {
@@ -178,4 +227,8 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
   .shift-dot { width: 15px; height: 15px; font-size: 8px; }
   .legend { gap: 8px; }
   .legend-item { font-size: 8px; }
+  .settings-sheet { padding-left: 13px; padding-right: 13px; max-height: 93dvh; }
+  .settings-card { padding: 11px; }
+  .settings-upload-card { flex-wrap: wrap; }
+  .settings-upload-button { margin-left: 46px; }
 }
