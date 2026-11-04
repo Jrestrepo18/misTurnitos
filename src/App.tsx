@@ -269,7 +269,7 @@ function App() {
             <p className="eyebrow">TU CALENDARIO PERSONAL</p>
             <p className="muted">Aquí tienes tus turnos organizaditos.</p>
           </div>
-          <div className="welcome-flower" aria-hidden="true"><span>✿</span></div>
+          <div className="welcome-flower" aria-hidden="true"><span>🌻</span></div>
         </section>
 
         {schedule && schedule.names.length > 0 ? (
@@ -397,7 +397,7 @@ function App() {
 
         {notice && <div className={`notice ${error ? 'notice-warning' : ''}`}><span>{error ? <CircleHelp size={15} /> : <Check size={15} />}</span><p>{error || notice}</p><button aria-label="Cerrar aviso" onClick={() => { setNotice(''); setError(''); }}><X size={15} /></button></div>}
 
-        <footer className="footer-note"><Heart size={13} fill="currentColor" /> Hecho con cariño, solo para ti.</footer>
+        <footer className="footer-note"><Heart className="footer-heart" size={13} fill="currentColor" /> Hecho con cariño, solo para ti.</footer>
       </main>
 
       <input ref={fileRef} className="hidden-input" type="file" accept=".xlsx,.xls,.csv" onChange={e => e.target.files?.[0] && void uploadExcel(e.target.files[0])} />
