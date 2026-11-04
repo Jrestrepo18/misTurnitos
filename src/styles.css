@@ -111,6 +111,7 @@ h1 span { color: #d58ca6; }
 .notice-warning { background: #fbf1e9; color: #a17a5f; }
 .footer-note { display: flex; align-items: center; justify-content: center; gap: 6px; color: #b8aab5; font-size: 9px; padding: 25px 0 5px; }
 .footer-note svg { color: #d79ab0; }
+.footer-note .footer-heart { color: #e5bd55; }
 .import-card { padding: 23px 18px 19px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .import-illustration { width: 57px; height: 57px; display: grid; place-items: center; background: #f1eaf5; border-radius: 20px; color: #9279a6; margin-bottom: 2px; }
 .import-copy h2, .choose-card h2 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; color: #5b505e; font-size: 19px; margin: 0 0 6px; }
@@ -136,7 +137,7 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  padding: 12px 12px max(8px, env(safe-area-inset-bottom));
   background: rgba(55, 43, 60, .34);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
@@ -144,13 +145,14 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
 }
 .settings-sheet {
   width: min(100%, 490px);
-  max-height: min(91dvh, 820px);
+  height: min(64dvh, 620px);
+  max-height: calc(100dvh - 18px - env(safe-area-inset-top));
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: #fffdfc;
   border: 1px solid rgba(240, 231, 239, .95);
-  border-radius: 27px;
+  border-radius: 27px 27px 22px 22px;
   padding: 9px 18px 0;
   box-shadow: 0 18px 60px rgba(49, 37, 51, .23);
   animation: settingsSheetIn .22s ease-out;
@@ -207,15 +209,15 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
 .privacy-note { margin: 9px 0 0; display: flex; justify-content: center; align-items: center; gap: 6px; color: #a69ba7; font-size: 8px; line-height: 1.4; text-align: center; }
 .privacy-note svg { flex: 0 0 auto; color: #8d9d8e; }
 @keyframes settingsFadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes settingsSheetIn { from { opacity: .75; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes settingsSheetIn { from { opacity: .75; transform: translateY(38px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (min-width: 700px) {
   .main-content { padding-top: 24px; }
   .welcome-row { margin-bottom: 24px; }
   .calendar-card { padding: 22px 20px 16px; }
   .day-cell { aspect-ratio: 1 / .8; }
-  .modal-backdrop { align-items: center; padding: 20px; }
-  .settings-sheet { max-height: min(88dvh, 820px); border-radius: 27px; }
+  .modal-backdrop { align-items: flex-end; padding: 20px 20px max(12px, env(safe-area-inset-bottom)); }
+  .settings-sheet { height: min(68dvh, 700px); max-height: min(88dvh, 820px); border-radius: 27px; }
 }
 
 /* Se restauran exactamente las medidas móviles del CSS que compartiste.
