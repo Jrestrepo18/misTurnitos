@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft, ArrowRight, CalendarDays, Check, ChevronDown, CircleHelp,
   CloudDownload, FileSpreadsheet, Heart, LoaderCircle, Moon, RefreshCw,
-  Settings2, Sparkles, Upload, UserRound, X, WifiOff, Link2, ShieldCheck
+  Settings2, Sparkles, Upload, UserRound, X, WifiOff
 } from 'lucide-react';
 import { fetchGoogleSheet, parseExcelFile, type ParsedSchedule, type ShiftCode, type ShiftEvent } from './lib/schedule';
 
@@ -77,8 +77,6 @@ function App() {
   const [notice, setNotice] = useState('');
   const [lastSync, setLastSync] = useState(() => localStorage.getItem('mis-turnitos-sync-v1') || '');
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [settingsAux, setSettingsAux] = useState(() => readSavedAuxiliary());
-  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [setupName, setSetupName] = useState('');
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -150,58 +148,6 @@ function App() {
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
 
-  // Al abrir la hoja de configuración, bloqueamos el desplazamiento de la página
-  // que queda detrás. En iOS fijamos el body y restauramos la posición al cerrar;
-  // el contenido interno del modal conserva su propio scroll.
-  useEffect(() => {
-    if (!settingsOpen) return;
-
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const html = document.documentElement;
-    const previousBodyStyles = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      overflow: body.style.overflow,
-    };
-    const previousHtmlOverflow = html.style.overflow;
-    const previousHtmlOverscroll = html.style.overscrollBehavior;
-
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.width = '100%';
-    body.style.overflow = 'hidden';
-    html.style.overflow = 'hidden';
-    html.style.overscrollBehavior = 'none';
-
-    const preventBackgroundTouch = (event: TouchEvent) => {
-      const sheet = document.querySelector('.settings-sheet');
-      const target = event.target;
-      if (sheet && target instanceof Node && !sheet.contains(target)) {
-        event.preventDefault();
-      }
-    };
-    document.addEventListener('touchmove', preventBackgroundTouch, { passive: false });
-
-    return () => {
-      document.removeEventListener('touchmove', preventBackgroundTouch);
-      body.style.position = previousBodyStyles.position;
-      body.style.top = previousBodyStyles.top;
-      body.style.left = previousBodyStyles.left;
-      body.style.right = previousBodyStyles.right;
-      body.style.width = previousBodyStyles.width;
-      body.style.overflow = previousBodyStyles.overflow;
-      html.style.overflow = previousHtmlOverflow;
-      html.style.overscrollBehavior = previousHtmlOverscroll;
-      window.scrollTo(0, scrollY);
-    };
-  }, [settingsOpen]);
-
   useEffect(() => {
     const onOnline = () => { setIsOffline(false); void syncFromLink(sourceUrl, sheetName, true); };
     const onOffline = () => { setIsOffline(true); setNotice('Sin conexión: se conserva el último calendario guardado.'); };
@@ -251,23 +197,8 @@ function App() {
   }, [viewDate]);
 
   const refresh = () => void syncFromLink(sourceUrl, sheetName);
-  const openSettings = () => {
-    setSettingsAux(selectedAux);
-    setAdvancedOpen(Boolean(sheetName.trim()));
-    setShowSourceHelp(false);
-    setSettingsOpen(true);
-  };
-  const cancelSettings = () => {
-    setSourceUrl(localStorage.getItem(STORAGE_SOURCE) || DEFAULT_SOURCE_URL);
-    setSheetName(localStorage.getItem(STORAGE_SHEET) || '');
-    setSettingsAux(selectedAux);
-    setAdvancedOpen(false);
-    setShowSourceHelp(false);
-    setSettingsOpen(false);
-  };
   const chooseAux = (name: string) => {
     setSelectedAux(name);
-    setSettingsAux(name);
     persistAuxiliary(name);
     setSetupName('');
     setSettingsOpen(false);
@@ -306,17 +237,11 @@ function App() {
   };
 
   const saveSettings = () => {
-    const nextAux = schedule?.names.find(name => normalizeAuxName(name) === normalizeAuxName(settingsAux)) || settingsAux.trim();
-    if (nextAux) {
-      setSelectedAux(nextAux);
-      persistAuxiliary(nextAux);
-    }
     try {
       localStorage.setItem(STORAGE_SOURCE, sourceUrl.trim());
       localStorage.setItem(STORAGE_SHEET, sheetName.trim());
     } catch { /* La app puede seguir funcionando aunque el almacenamiento esté restringido. */ }
     setSettingsOpen(false);
-    setAdvancedOpen(false);
     void syncFromLink(sourceUrl.trim(), sheetName.trim());
   };
 
@@ -334,7 +259,7 @@ function App() {
         <div className="brand-copy"><span>MI ESPACIO</span><strong>mis turnitos <span className="brand-heart">♡</span></strong></div>
         <div className="topbar-actions">
           {isOffline && <span className="offline-dot" title="Sin conexión"><WifiOff size={15} /></span>}
-          <button className="icon-button" aria-label="Configuración" onClick={openSettings}><Settings2 size={20} /></button>
+          <button className="icon-button" aria-label="Configuración" onClick={() => setSettingsOpen(true)}><Settings2 size={20} /></button>
         </div>
       </header>
 
@@ -348,7 +273,7 @@ function App() {
         </section>
 
         {schedule && schedule.names.length > 0 ? (
-          <button className="auxiliary-pill" onClick={openSettings}>
+          <button className="auxiliary-pill" onClick={() => setSettingsOpen(true)}>
             <span className="avatar"><UserRound size={17} /></span>
             <span className="auxiliary-label"><small>ESTE CALENDARIO ES DE</small><strong>{selectedAux || 'Selecciona tu nombre'}</strong></span>
             <ChevronDown size={17} className="pill-chevron" />
@@ -478,86 +403,18 @@ function App() {
       <input ref={fileRef} className="hidden-input" type="file" accept=".xlsx,.xls,.csv" onChange={e => e.target.files?.[0] && void uploadExcel(e.target.files[0])} />
 
       {settingsOpen && (
-        <div className="modal-backdrop" onClick={cancelSettings}>
-          <section className="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={e => e.stopPropagation()}>
+        <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
+          <section className="settings-sheet" onClick={e => e.stopPropagation()}>
             <div className="sheet-handle" />
-            <header className="settings-header">
-              <div className="settings-title-wrap">
-                <span className="settings-kicker">TU ESPACIO PERSONAL</span>
-                <h2 id="settings-title">Configuración <span>♡</span></h2>
-                <p>Administra tu calendario y mantén tus turnos al día.</p>
-              </div>
-              <button className="settings-close" onClick={cancelSettings} aria-label="Cerrar configuración"><X size={19} /></button>
-            </header>
-
-            <div className="settings-scroll">
-              {schedule && (
-                <section className="settings-card profile-card">
-                  <div className="settings-card-heading">
-                    <span className="settings-icon profile-icon"><UserRound size={18} /></span>
-                    <div><h3>Mi auxiliar</h3><p>Elige el calendario que quieres consultar.</p></div>
-                  </div>
-                  <label className="settings-field-label" htmlFor="settings-aux">Nombre de la auxiliar</label>
-                  <div className="settings-select-wrap">
-                    <select id="settings-aux" value={settingsAux} onChange={e => setSettingsAux(e.target.value)}>
-                      <option value="">Seleccionar auxiliar…</option>
-                      {schedule.names.map(name => <option value={name} key={name}>{name}</option>)}
-                    </select>
-                    <ChevronDown size={17} />
-                  </div>
-                  <div className="settings-inline-hint"><Check size={14} /> Se recordará en este celular.</div>
-                </section>
-              )}
-
-              <section className="settings-card source-card">
-                <div className="settings-card-heading">
-                  <span className="settings-icon source-icon"><Link2 size={18} /></span>
-                  <div><h3>Origen de tus turnos</h3><p>Conecta el documento donde actualizan tu cuadro.</p></div>
-                </div>
-                <label className="settings-field-label" htmlFor="settings-source">Enlace de Google Sheets</label>
-                <input id="settings-source" className="settings-input" type="url" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="Pega aquí el enlace del cuadro" autoComplete="url" />
-                <p className="settings-field-help">Como normalmente actualizan el mismo documento, este enlace se configura una sola vez.</p>
-
-                <button className="advanced-toggle" onClick={() => setAdvancedOpen(value => !value)} aria-expanded={advancedOpen}>
-                  <span><Settings2 size={15} /> Opciones avanzadas</span>
-                  <ChevronDown className={advancedOpen ? 'advanced-chevron is-open' : 'advanced-chevron'} size={17} />
-                </button>
-                {advancedOpen && (
-                  <div className="advanced-content">
-                    <label className="settings-field-label" htmlFor="settings-sheet-name">Nombre de la pestaña <span>(opcional)</span></label>
-                    <input id="settings-sheet-name" className="settings-input" type="text" value={sheetName} onChange={e => setSheetName(e.target.value)} placeholder="Ej. AUX URG NOVIEMBRE SEDE 80" />
-                    <p className="settings-field-help">Déjalo vacío para que la app intente leer la primera pestaña disponible.</p>
-                  </div>
-                )}
-              </section>
-
-              <section className="settings-upload-card">
-                <span className="settings-upload-icon"><FileSpreadsheet size={19} /></span>
-                <div className="settings-upload-copy"><h3>¿Tienes el Excel?</h3><p>También puedes cargar el archivo directamente desde tu celular.</p></div>
-                <button className="settings-upload-button" onClick={() => fileRef.current?.click()}><Upload size={15} /> Subir Excel</button>
-              </section>
-
-              <section className="settings-help-card">
-                <button className="settings-help-toggle" onClick={() => setShowSourceHelp(value => !value)} aria-expanded={showSourceHelp}>
-                  <span className="settings-help-title"><CircleHelp size={17} /> ¿Cómo compartir el documento?</span>
-                  <ChevronDown className={showSourceHelp ? 'advanced-chevron is-open' : 'advanced-chevron'} size={17} />
-                </button>
-                {showSourceHelp && (
-                  <div className="settings-help-content">
-                    En Google Sheets, entra a <b>Compartir → Acceso general</b> y verifica que la aplicación tenga permiso de lectura. Si eliges <b>“Cualquier persona con el enlace”</b>, cualquier persona que tenga ese enlace podrá consultar el documento. No uses esa opción si el cuadro contiene información privada.
-                  </div>
-                )}
-              </section>
-            </div>
-
-            <footer className="settings-footer">
-              {installPrompt && <button className="settings-install-button" onClick={async () => { await installPrompt.prompt(); setInstallPrompt(null); }}><CalendarDays size={16} /> Instalar en este celular</button>}
-              <div className="settings-actions">
-                <button className="settings-cancel-button" onClick={cancelSettings}>Cancelar</button>
-                <button className="settings-save-button" onClick={saveSettings} disabled={!sourceUrl.trim() || (schedule?.names.length ? !settingsAux : false)}><CloudDownload size={16} /> Guardar cambios</button>
-              </div>
-              <p className="privacy-note"><ShieldCheck size={14} /> Tu nombre y tu calendario se guardan en este celular.</p>
-            </footer>
+            <div className="settings-header"><div><p className="eyebrow">PERSONALIZA TU APP</p><h2>Mis ajustes <span>♡</span></h2></div><button className="icon-button" onClick={() => setSettingsOpen(false)} aria-label="Cerrar"><X size={20} /></button></div>
+            {schedule && <div className="setting-group"><label>Mi auxiliar</label><select value={selectedAux} onChange={e => chooseAux(e.target.value)}><option value="">Seleccionar auxiliar…</option>{schedule.names.map(name => <option value={name} key={name}>{name}</option>)}</select><small>Tu selección queda guardada en este dispositivo.</small></div>}
+            <div className="setting-group"><label>Enlace del cuadro de turnos</label><input type="url" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="Pega aquí el enlace de Google Sheets" /><small>Se guarda una sola vez. Si actualizan el mismo documento, no tendrás que cambiarlo.</small></div>
+            <div className="setting-group"><label>Nombre de la pestaña (opcional)</label><input type="text" value={sheetName} onChange={e => setSheetName(e.target.value)} placeholder="Ej. AUX URG NOVIEMBRE SEDE 80" /><small>Déjalo vacío para que la app intente leer la primera pestaña.</small></div>
+            <button className="secondary-button" onClick={() => setShowSourceHelp(!showSourceHelp)}><CircleHelp size={16} /> ¿Cómo debe estar compartido el documento?</button>
+            {showSourceHelp && <div className="help-panel">En Google Sheets: <b>Compartir → Acceso general → Cualquier persona con el enlace → Lector</b>. Esto permite que el calendario lea el documento sin pedir una contraseña. No compartas datos privados si no deben ser visibles para quien tenga el enlace.</div>}
+            <div className="settings-actions"><button className="outline-button" onClick={() => fileRef.current?.click()}><Upload size={16} /> Subir Excel</button><button className="primary-button" onClick={saveSettings} disabled={!sourceUrl.trim()}><CloudDownload size={16} /> Guardar y actualizar</button></div>
+            {installPrompt && <button className="install-button" onClick={async () => { await installPrompt.prompt(); setInstallPrompt(null); }}><CalendarDays size={16} /> Instalar en este celular</button>}
+            <p className="privacy-note"><Moon size={13} /> Tus turnos y tu nombre se guardan localmente en este celular.</p>
           </section>
         </div>
       )}
