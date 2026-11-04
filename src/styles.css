@@ -94,3 +94,88 @@ h1 span { color: #d58ca6; }
 .detail-code.posturno { background: #eadff2; color: #8b70a4; }
 .detail-code.night { background: #f4dfe7; color: #b87491; }
 .detail-shift strong, .detail-shift small { display: block; }
+.detail-shift strong { font-size: 12px; color: #615766; }
+.detail-shift small { font-size: 10px; color: #9a909a; margin-top: 2px; }
+.detail-check { margin-left: auto; color: #9d8aa3; }
+.no-shift { display: flex; align-items: center; gap: 10px; background: #faf7f7; padding: 12px; border-radius: 14px; }
+.no-shift > span { font-size: 24px; color: #c3b2c4; }
+.no-shift strong, .no-shift small { display: block; }
+.no-shift strong { font-size: 11px; color: #776d79; }
+.no-shift small { color: #a49aa4; font-size: 9px; margin-top: 3px; }
+.sync-row { margin: 11px 3px 0; display: flex; align-items: center; justify-content: space-between; color: #a69ca4; font-size: 9px; gap: 8px; }
+.sync-row button { border: 0; background: transparent; color: #8a719a; font-weight: 700; font-size: 10px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 2px; white-space: nowrap; }
+.notice { margin: 14px 0 0; padding: 10px 11px; border-radius: 13px; background: #eef5ef; color: #67826c; display: flex; align-items: flex-start; gap: 8px; font-size: 10px; line-height: 1.45; }
+.notice > span { flex: 0 0 auto; margin-top: 1px; }
+.notice p { margin: 0; flex: 1; }
+.notice button { border: 0; background: transparent; color: inherit; padding: 0; display: grid; }
+.notice-warning { background: #fbf1e9; color: #a17a5f; }
+.footer-note { display: flex; align-items: center; justify-content: center; gap: 6px; color: #b8aab5; font-size: 9px; padding: 25px 0 5px; }
+.footer-note svg { color: #d79ab0; }
+.footer-note .footer-heart { color: #e5bd55; }
+.import-card { padding: 23px 18px 19px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.import-illustration { width: 57px; height: 57px; display: grid; place-items: center; background: #f1eaf5; border-radius: 20px; color: #9279a6; margin-bottom: 2px; }
+.import-copy h2, .choose-card h2 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; color: #5b505e; font-size: 19px; margin: 0 0 6px; }
+.import-copy p, .choose-card p { color: #978d97; font-size: 11px; line-height: 1.5; margin: 0; }
+.primary-button, .secondary-button, .outline-button, .install-button { border: 0; border-radius: 13px; min-height: 43px; padding: 0 15px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; }
+.primary-button { background: #9279a6; color: white; box-shadow: 0 5px 12px rgba(146,121,166,.18); }
+.primary-button:hover { background: #816993; }
+.primary-button.full { width: 100%; }
+.text-button { border: 0; background: transparent; color: #9179a2; display: inline-flex; align-items: center; gap: 7px; padding: 7px; font-size: 10px; font-weight: 700; }
+.choose-card { padding: 22px 18px; display: flex; flex-direction: column; align-items: center; gap: 11px; text-align: center; }
+.choose-icon { height: 48px; width: 48px; display: grid; place-items: center; border-radius: 17px; background: #f8eaf0; color: #c47e9b; }
+.choose-card select { width: 100%; }
+select, input[type="url"], input[type="text"] { min-height: 43px; border: 1px solid #eee5ed; border-radius: 12px; background: #fff; padding: 0 12px; color: #625765; font-size: 11px; outline: none; width: 100%; }
+select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(187,166,202,.13); }
+.hidden-input { display: none; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.modal-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(66,54,68,.28); display: flex; align-items: flex-end; justify-content: center; padding: 12px; }
+.settings-sheet { width: min(100%, 480px); max-height: min(88vh, 760px); overflow-y: auto; background: #fffdfc; border-radius: 25px; padding: 9px 19px max(18px, env(safe-area-inset-bottom)); box-shadow: 0 12px 45px rgba(49,37,51,.18); }
+.sheet-handle { height: 4px; width: 38px; border-radius: 5px; background: #e9e0e7; margin: 1px auto 16px; }
+.settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+.settings-header h2 { margin: 0; color: #584d5c; font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: 22px; }
+.settings-header h2 span { color: #d58ca6; }
+.setting-group { margin: 13px 0; display: grid; gap: 6px; }
+.setting-group label { color: #6c606e; font-size: 10px; font-weight: 700; }
+.setting-group small { color: #a399a2; font-size: 9px; line-height: 1.5; }
+.secondary-button { width: 100%; margin: 4px 0 0; color: #8c759b; background: #f4eff6; }
+.help-panel { margin-top: 9px; background: #f8f4f8; padding: 11px; border-radius: 12px; color: #837888; line-height: 1.55; font-size: 10px; }
+.settings-actions { display: grid; grid-template-columns: .9fr 1.3fr; gap: 8px; margin-top: 17px; }
+.outline-button { border: 1px solid #e9e0eb; background: white; color: #856f95; }
+.install-button { width: 100%; background: #f8eaf0; color: #a56f87; margin-top: 9px; }
+.privacy-note { margin: 14px 0 0; display: flex; justify-content: center; align-items: center; gap: 6px; color: #aaa0a9; font-size: 9px; }
+
+@media (min-width: 700px) {
+  .main-content { padding-top: 24px; }
+  .welcome-row { margin-bottom: 24px; }
+  .calendar-card { padding: 22px 20px 16px; }
+  .day-cell { aspect-ratio: 1 / .8; }
+  .modal-backdrop { align-items: center; }
+}
+
+/* En móviles: acercamos la bienvenida al encabezado y subimos el calendario.
+   La flor mantiene exactamente su tamaño, forma y recuadro actuales. */
+@media (max-width: 699px) {
+  .topbar { padding-bottom: 6px; }
+  .main-content { padding-top: 3px; padding-bottom: 18px; }
+  .welcome-row { margin: 0 2px 10px; }
+  .welcome-flower { width: 66px; height: 66px; font-size: 42px; }
+  .auxiliary-pill { padding: 8px 12px; margin-bottom: 10px; }
+  .calendar-card { padding-top: 15px; padding-bottom: 12px; }
+  .calendar-heading { margin-bottom: 12px; }
+  .weekdays { margin-bottom: 6px; }
+  .day-cell, .calendar-empty { aspect-ratio: 1 / 1; }
+  .day-detail { margin-top: 10px; }
+}
+
+@media (max-width: 380px) {
+  .main-content { width: min(100% - 24px, 480px); }
+  .topbar { padding-left: 16px; padding-right: 16px; }
+  .calendar-card { padding-left: 11px; padding-right: 11px; }
+  .weekdays, .calendar-grid { gap: 3px; }
+  .day-cell { border-radius: 9px; }
+  .shift-dot { width: 15px; height: 15px; font-size: 8px; }
+  .legend { gap: 8px; }
+  .legend-item { font-size: 8px; }
+}
