@@ -8,7 +8,8 @@ import { fetchGoogleSheet, parseExcelFile, type ParsedSchedule, type ShiftCode, 
 
 const DEFAULT_SOURCE_URL = 'https://docs.google.com/spreadsheets/u/0/d/1IK8wEXTsn9azsjrpUjzKgCDS-iBbV8T_/htmlview?pli=1';
 const STORAGE_DATA = 'mis-turnitos-data-v1';
-const STORAGE_AUX = 'mis-turnitos-aux-v1';
+const STORAGE_AUX = 'mis-turnitos-aux-v2';
+const LEGACY_STORAGE_AUX = 'mis-turnitos-aux-v1';
 const STORAGE_SOURCE = 'mis-turnitos-source-v1';
 const STORAGE_SHEET = 'mis-turnitos-sheet-v1';
 
@@ -28,6 +29,30 @@ const dateFromKey = (key: string) => {
 const sameDay = (a: Date, b: Date) => dateKey(a) === dateKey(b);
 const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 
+// Compara nombres aunque el Excel traiga espacios dobles, tildes o mayúsculas distintas.
+const normalizeAuxName = (name: string) => name
+  .trim()
+  .replace(/\s+/g, ' ')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLocaleLowerCase('es');
+
+function readSavedAuxiliary(): string {
+  try {
+    // La clave v1 se conserva como respaldo para no perder selecciones anteriores.
+    return localStorage.getItem(STORAGE_AUX) || localStorage.getItem(LEGACY_STORAGE_AUX) || '';
+  } catch { return ''; }
+}
+
+function persistAuxiliary(name: string) {
+  try {
+    localStorage.setItem(STORAGE_AUX, name);
+    localStorage.setItem(LEGACY_STORAGE_AUX, name);
+  } catch {
+    // La app sigue funcionando aunque el navegador restrinja el almacenamiento.
+  }
+}
+
 function loadSavedData(): ParsedSchedule | null {
   try {
     const raw = localStorage.getItem(STORAGE_DATA);
@@ -42,7 +67,7 @@ function saveData(data: ParsedSchedule) {
 function App() {
   const [today, setToday] = useState(() => new Date());
   const [schedule, setSchedule] = useState<ParsedSchedule | null>(null);
-  const [selectedAux, setSelectedAux] = useState(() => localStorage.getItem(STORAGE_AUX) || '');
+  const [selectedAux, setSelectedAux] = useState(() => readSavedAuxiliary());
   const [sourceUrl, setSourceUrl] = useState(() => localStorage.getItem(STORAGE_SOURCE) || DEFAULT_SOURCE_URL);
   const [sheetName, setSheetName] = useState(() => localStorage.getItem(STORAGE_SHEET) || '');
   const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
@@ -68,10 +93,18 @@ function App() {
       if (!fresh.events.length || !fresh.names.length) throw new Error('Encontré el documento, pero todavía no puedo reconocer sus turnos. Prueba subir el Excel para ajustar el lector al formato.');
       setSchedule(fresh);
       saveData(fresh);
-      const currentAux = localStorage.getItem(STORAGE_AUX) || selectedAux;
-      if (currentAux && !fresh.names.some(name => name.toLocaleLowerCase('es') === currentAux.toLocaleLowerCase('es'))) {
-        setSelectedAux('');
-        localStorage.removeItem(STORAGE_AUX);
+      // No borrar la auxiliar guardada cuando se actualiza el Excel.
+      // Algunos cuadros cambian tildes, espacios o incluso el formato del nombre
+      // de un mes a otro; pedir que la persona se identifique en cada apertura
+      // sería molesto. Solo actualizamos el nombre a su versión canónica si
+      // encontramos una coincidencia normalizada. Si no existe, conservamos
+      // la selección y mostramos el calendario sin turnos hasta que coincida.
+      const currentAux = readSavedAuxiliary() || selectedAux;
+      if (currentAux) {
+        const matchingName = fresh.names.find(name => normalizeAuxName(name) === normalizeAuxName(currentAux));
+        const savedName = matchingName || currentAux;
+        setSelectedAux(savedName);
+        persistAuxiliary(savedName);
       }
       // Al actualizar el cuadro no cambiamos el día que está consultando.
       // Al iniciar la app, la selección predeterminada ya es la fecha de hoy.
@@ -130,7 +163,7 @@ function App() {
   }, [sourceUrl, sheetName, syncFromLink]);
 
   const myEvents = useMemo(() => schedule?.events.filter(event =>
-    selectedAux && event.auxiliary.toLocaleLowerCase('es') === selectedAux.toLocaleLowerCase('es')
+    selectedAux && normalizeAuxName(event.auxiliary) === normalizeAuxName(selectedAux)
   ) ?? [], [schedule, selectedAux]);
 
   const monthEvents = useMemo(() => myEvents.filter(event => {
@@ -166,7 +199,7 @@ function App() {
   const refresh = () => void syncFromLink(sourceUrl, sheetName);
   const chooseAux = (name: string) => {
     setSelectedAux(name);
-    localStorage.setItem(STORAGE_AUX, name);
+    persistAuxiliary(name);
     setSetupName('');
     setSettingsOpen(false);
     setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
@@ -186,8 +219,10 @@ function App() {
       setSchedule(parsed);
       saveData(parsed);
       // Tras importar, mantenemos visible el mes actual y el día de hoy.
-      if (selectedAux && !parsed.names.some(name => name.toLocaleLowerCase('es') === selectedAux.toLocaleLowerCase('es'))) {
-        setSelectedAux(''); localStorage.removeItem(STORAGE_AUX);
+      // La importación de un nuevo mes tampoco debe borrar la auxiliar elegida.
+      if (selectedAux) {
+        const matchingName = parsed.names.find(name => normalizeAuxName(name) === normalizeAuxName(selectedAux));
+        if (matchingName) { setSelectedAux(matchingName); persistAuxiliary(matchingName); }
       }
       const now = new Date().toISOString();
       setLastSync(now); localStorage.setItem('mis-turnitos-sync-v1', now);
@@ -202,8 +237,10 @@ function App() {
   };
 
   const saveSettings = () => {
-    localStorage.setItem(STORAGE_SOURCE, sourceUrl.trim());
-    localStorage.setItem(STORAGE_SHEET, sheetName.trim());
+    try {
+      localStorage.setItem(STORAGE_SOURCE, sourceUrl.trim());
+      localStorage.setItem(STORAGE_SHEET, sheetName.trim());
+    } catch { /* La app puede seguir funcionando aunque el almacenamiento esté restringido. */ }
     setSettingsOpen(false);
     void syncFromLink(sourceUrl.trim(), sheetName.trim());
   };
@@ -230,7 +267,6 @@ function App() {
         <section className="welcome-row">
           <div>
             <p className="eyebrow">TU CALENDARIO PERSONAL</p>
-            <h1>Hola, qué bueno<br className="mobile-break" /> verte <span>♡</span></h1>
             <p className="muted">Aquí tienes tus turnos organizaditos.</p>
           </div>
           <div className="welcome-flower" aria-hidden="true"><span>✿</span></div>
