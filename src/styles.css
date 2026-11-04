@@ -154,6 +154,21 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
   .modal-backdrop { align-items: center; }
 }
 
+/* En móviles: acercamos la bienvenida al encabezado y subimos el calendario.
+   La flor mantiene exactamente su tamaño, forma y recuadro actuales. */
+@media (max-width: 699px) {
+  .topbar { padding-bottom: 6px; }
+  .main-content { padding-top: 3px; padding-bottom: 18px; }
+  .welcome-row { margin: 0 2px 10px; }
+  .welcome-flower { width: 66px; height: 66px; font-size: 42px; }
+  .auxiliary-pill { padding: 8px 12px; margin-bottom: 10px; }
+  .calendar-card { padding-top: 15px; padding-bottom: 12px; }
+  .calendar-heading { margin-bottom: 12px; }
+  .weekdays { margin-bottom: 6px; }
+  .day-cell, .calendar-empty { aspect-ratio: 1 / 1; }
+  .day-detail { margin-top: 10px; }
+}
+
 @media (max-width: 380px) {
   .main-content { width: min(100% - 24px, 480px); }
   .topbar { padding-left: 16px; padding-right: 16px; }
