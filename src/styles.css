@@ -39,7 +39,7 @@ h1 { font-family: 'Avenir Next', 'Trebuchet MS', sans-serif; font-size: clamp(29
 h1 span { color: #d58ca6; }
 .mobile-break { display: none; }
 .muted { margin: 0; color: #968c95; font-size: 12px; }
-.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #cb8ba2; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
+.welcome-flower { width: 66px; height: 66px; border-radius: 24px; background: #f5e8ed; color: #e5bd55; display: grid; place-items: center; font-size: 42px; transform: rotate(9deg); }
 .auxiliary-pill { width: 100%; border: 1px solid #eee5ed; border-radius: 18px; background: #fffdfc; display: flex; align-items: center; padding: 11px 13px; text-align: left; gap: 10px; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(112, 89, 109, .035); }
 .avatar { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 13px; color: #856f99; background: #f0e8f5; }
 .auxiliary-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -216,6 +216,22 @@ select:focus, input:focus { border-color: #bba6ca; box-shadow: 0 0 0 3px rgba(18
   .day-cell { aspect-ratio: 1 / .8; }
   .modal-backdrop { align-items: center; padding: 20px; }
   .settings-sheet { max-height: min(88dvh, 820px); border-radius: 27px; }
+}
+
+/* Se restauran exactamente las medidas móviles del CSS que compartiste.
+   Estos ajustes afectan solo la distribución original de la pantalla principal;
+   el modal mejorado conserva sus estilos propios. */
+@media (max-width: 699px) {
+  .topbar { padding-bottom: 6px; }
+  .main-content { padding-top: 3px; padding-bottom: 18px; }
+  .welcome-row { margin: 0 2px 10px; }
+  .welcome-flower { width: 66px; height: 66px; font-size: 42px; }
+  .auxiliary-pill { padding: 8px 12px; margin-bottom: 10px; }
+  .calendar-card { padding-top: 15px; padding-bottom: 12px; }
+  .calendar-heading { margin-bottom: 12px; }
+  .weekdays { margin-bottom: 6px; }
+  .day-cell, .calendar-empty { aspect-ratio: 1 / 1; }
+  .day-detail { margin-top: 10px; }
 }
 
 @media (max-width: 380px) {
