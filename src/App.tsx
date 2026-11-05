@@ -171,6 +171,18 @@ function App() {
     return d.getFullYear() === viewDate.getFullYear() && d.getMonth() === viewDate.getMonth();
   }), [myEvents, viewDate]);
 
+  // Cuenta días únicos por código para la auxiliar seleccionada, usando todo el calendario cargado.
+  const shiftDayCounts = useMemo(() => {
+    const daysByCode: Record<ShiftCode, Set<string>> = { C: new Set(), D: new Set(), P: new Set(), N: new Set() };
+    for (const event of myEvents) {
+      const codes: ShiftCode[] = event.codes ?? ((event as any).code ? [(event as any).code as ShiftCode] : []);
+      for (const code of codes) {
+        if (code in daysByCode) daysByCode[code].add(event.date);
+      }
+    }
+    return Object.fromEntries((Object.keys(daysByCode) as ShiftCode[]).map(code => [code, daysByCode[code].size])) as Record<ShiftCode, number>;
+  }, [myEvents]);
+
   const selectedDayEvents = useMemo(() => myEvents.filter(event => event.date === selectedDate), [myEvents, selectedDate]);
   const eventMap = useMemo(() => {
     const map = new Map<string, ShiftCode[]>();
@@ -256,7 +268,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div className="brand-mark"><CalendarDays size={21} strokeWidth={1.9} /></div>
-        <div className="brand-copy"><span>MI ESPACIO</span><strong>Mis Turnitos <span className="brand-heart">♡</span></strong></div>
+        <div className="brand-copy"><span>MI ESPACIO</span><strong>mis turnitos <span className="brand-heart">♡</span></strong></div>
         <div className="topbar-actions">
           {isOffline && <span className="offline-dot" title="Sin conexión"><WifiOff size={15} /></span>}
           <button className="icon-button" aria-label="Configuración" onClick={() => setSettingsOpen(true)}><Settings2 size={20} /></button>
@@ -343,7 +355,11 @@ function App() {
               <div className="legend">
                 <span className="legend-title">TU LEYENDA</span>
                 {(Object.keys(SHIFT_INFO) as ShiftCode[]).map(code => (
-                  <span className="legend-item" key={code}><b className={`shift-dot ${SHIFT_INFO[code].color}`}>{code}</b><span>{SHIFT_INFO[code].label}</span></span>
+                  <span className="legend-item" key={code}>
+                    <b className={`shift-dot ${SHIFT_INFO[code].color}`}>{code}</b>
+                    <span>{SHIFT_INFO[code].label}</span>
+                    <strong className="legend-count">{shiftDayCounts[code]} días</strong>
+                  </span>
                 ))}
               </div>
             </section>
@@ -404,9 +420,9 @@ function App() {
 
       {settingsOpen && (
         <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>
-          <section className="settings-sheet" onClick={e => e.stopPropagation()}>
+          <section className="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={e => e.stopPropagation()}>
             <div className="sheet-handle" />
-            <div className="settings-header"><div><p className="eyebrow">PERSONALIZA TU APP</p><h2>Mis ajustes <span>♡</span></h2></div><button className="icon-button" onClick={() => setSettingsOpen(false)} aria-label="Cerrar"><X size={20} /></button></div>
+            <div className="settings-header"><div><p className="eyebrow">PERSONALIZA TU APP</p><h2 id="settings-title">Mis ajustes <span>♡</span></h2></div><button className="icon-button" onClick={() => setSettingsOpen(false)} aria-label="Cerrar"><X size={20} /></button></div>
             {schedule && <div className="setting-group"><label>Mi auxiliar</label><select value={selectedAux} onChange={e => chooseAux(e.target.value)}><option value="">Seleccionar auxiliar…</option>{schedule.names.map(name => <option value={name} key={name}>{name}</option>)}</select><small>Tu selección queda guardada en este dispositivo.</small></div>}
             <div className="setting-group"><label>Enlace del cuadro de turnos</label><input type="url" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="Pega aquí el enlace de Google Sheets" /><small>Se guarda una sola vez. Si actualizan el mismo documento, no tendrás que cambiarlo.</small></div>
             <div className="setting-group"><label>Nombre de la pestaña (opcional)</label><input type="text" value={sheetName} onChange={e => setSheetName(e.target.value)} placeholder="Ej. AUX URG NOVIEMBRE SEDE 80" /><small>Déjalo vacío para que la app intente leer la primera pestaña.</small></div>
