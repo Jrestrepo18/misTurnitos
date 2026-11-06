@@ -268,7 +268,7 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <div className="brand-mark"><CalendarDays size={21} strokeWidth={1.9} /></div>
-        <div className="brand-copy"><span>MI ESPACIO</span><strong>mis turnitos <span className="brand-heart">♡</span></strong></div>
+        <div className="brand-copy"><span>MI ESPACIO</span><strong>Mis Turnitos <span className="brand-heart">♡</span></strong></div>
         <div className="topbar-actions">
           {isOffline && <span className="offline-dot" title="Sin conexión"><WifiOff size={15} /></span>}
           <button className="icon-button" aria-label="Configuración" onClick={() => setSettingsOpen(true)}><Settings2 size={20} /></button>
